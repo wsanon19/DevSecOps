@@ -89,6 +89,6 @@ ExecStart=/usr/local/bin/node_exporter \
 [Install]
 WantedBy=multi-user.target
 
-sudo systemctl enable node_exporter
+sudo systemctl restart node_exporter
 sudo systemctl enable node_exporter
 systemctl status node_exporter.service
