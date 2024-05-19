@@ -54,3 +54,41 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
 # Kubernetes networking distribution : Weave pulled from github official weave repos 
 kubectl apply -f https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s.yaml
+
+##Adding nodes exporter to send metrics to prometheus - grafana server
+# Create prometheus user
+sudo useradd \
+--system \
+--no-create-home \
+--shell /bin/false prometheus
+
+#Install nodes exporter 
+wget https://github.com/prometheus/node_exporter/releases/download/v1.7.0/node_exporter-1.7.0.linux-amd64.tar.gz
+tar -xvf node_exporter-1.7.0.linux-amd64.tar.gz
+sudo mv node_exporter-1.7.0.linux-amd64/node_exporter /usr/local/bin/
+
+#Create the systemd configuration file for node exporter.
+
+sudo vim /etc/systemd/system/node_exporter.service
+
+#Paste
+[Unit]
+Description=Node Exporter
+Wants=network-online.target
+After=network-online.target
+StartLimitIntervalSec=500
+StartLimitBurst=5
+[Service]
+User=node_exporter
+Group=node_exporter
+Type=simple
+Restart=on-failure
+RestartSec=5s
+ExecStart=/usr/local/bin/node_exporter \
+ - collector.logind
+[Install]
+WantedBy=multi-user.target
+
+sudo systemctl enable node_exporter
+sudo systemctl enable node_exporter
+systemctl status node_exporter.service
