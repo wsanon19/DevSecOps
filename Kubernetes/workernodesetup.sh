@@ -57,7 +57,7 @@ kubeadm join 192.168.1.115:6443 --token 97jts3.mpg818x88ooor16n \
 sudo useradd \
 --system \
 --no-create-home \
---shell /bin/false prometheus
+--shell /bin/false node_exporter
 
 
 #Install nodes exporter packages
