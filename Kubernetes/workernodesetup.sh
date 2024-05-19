@@ -65,6 +65,8 @@ wget https://github.com/prometheus/node_exporter/releases/download/v1.7.0/node_e
 tar -xvf node_exporter-1.7.0.linux-amd64.tar.gz
 sudo mv node_exporter-1.7.0.linux-amd64/node_exporter /usr/local/bin/
 
+sudo chown node_exporter:node_exporter /usr/local/bin/node_exporter
+
 #Create the systemd configuration file for node exporter.
 
 sudo vim /etc/systemd/system/node_exporter.service
@@ -81,7 +83,7 @@ User=node_exporter
 Group=node_exporter
 Type=simple
 Restart=on-failure
-RestartSec=5s
+RestartSec=10s
 ExecStart=/usr/local/bin/node_exporter \
  - collector.logind
 [Install]
