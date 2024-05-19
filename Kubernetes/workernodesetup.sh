@@ -51,3 +51,35 @@ systemctl enable kubelet.service
 # Kubernetes join cluster 
 kubeadm join 192.168.1.115:6443 --token 97jts3.mpg818x88ooor16n \
 --discovery-token-ca-cert-hash sha256:88dc027cfe0c7df908dc6d8b69b02ccc675af2a12131f4ddfbbbc92e07d4eca7
+
+
+#Install nodes exporter packages
+wget https://github.com/prometheus/node_exporter/releases/download/v1.7.0/node_exporter-1.7.0.linux-amd64.tar.gz
+tar -xvf node_exporter-1.7.0.linux-amd64.tar.gz
+sudo mv node_exporter-1.7.0.linux-amd64/node_exporter /usr/local/bin/
+
+#Create the systemd configuration file for node exporter.
+
+sudo vim /etc/systemd/system/node_exporter.service
+
+#Paste
+[Unit]
+Description=Node Exporter
+Wants=network-online.target
+After=network-online.target
+StartLimitIntervalSec=500
+StartLimitBurst=5
+[Service]
+User=node_exporter
+Group=node_exporter
+Type=simple
+Restart=on-failure
+RestartSec=5s
+ExecStart=/usr/local/bin/node_exporter \
+ - collector.logind
+[Install]
+WantedBy=multi-user.target
+
+sudo systemctl enable node_exporter
+sudo systemctl enable node_exporter
+systemctl status node_exporter.service
