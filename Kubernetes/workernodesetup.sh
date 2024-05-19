@@ -52,6 +52,13 @@ systemctl enable kubelet.service
 kubeadm join 192.168.1.115:6443 --token 97jts3.mpg818x88ooor16n \
 --discovery-token-ca-cert-hash sha256:88dc027cfe0c7df908dc6d8b69b02ccc675af2a12131f4ddfbbbc92e07d4eca7
 
+##Adding nodes exporter to send metrics to prometheus - grafana server
+# Create prometheus user
+sudo useradd \
+--system \
+--no-create-home \
+--shell /bin/false prometheus
+
 
 #Install nodes exporter packages
 wget https://github.com/prometheus/node_exporter/releases/download/v1.7.0/node_exporter-1.7.0.linux-amd64.tar.gz
