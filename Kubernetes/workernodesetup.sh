@@ -1,5 +1,5 @@
 
-# For Kubernetes Worker Node 
+# For Kubernetes Worker Node 1
 sudo hostnamectl set-hostname K8s-Worker-1
 
 sudo su
@@ -42,11 +42,12 @@ systemctl restart containerd.service
 curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key |gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg 
 echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /" |tee /etc/apt/sources.list.d/kubernetes.list 
 apt update 
-sudo apt-get install kubelet kubeadm kubectl –y
+sudo apt-get install kubelet kubeadm kubectl 
 sudo apt-mark hold kubelet kubeadm kubectl
 systemctl restart kubelet.service
 systemctl enable kubelet.service
 
 
-# Kubernetes networking distribution : Weave pulled from github official weave repos 
-kubectl apply -f https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s.yaml
+# Kubernetes join cluster 
+kubeadm join 192.168.1.115:6443 --token 97jts3.mpg818x88ooor16n \
+--discovery-token-ca-cert-hash sha256:88dc027cfe0c7df908dc6d8b69b02ccc675af2a12131f4ddfbbbc92e07d4eca7
