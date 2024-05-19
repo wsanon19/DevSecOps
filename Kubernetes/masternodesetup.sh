@@ -60,7 +60,7 @@ kubectl apply -f https://github.com/weaveworks/weave/releases/download/v2.8.1/we
 sudo useradd \
 --system \
 --no-create-home \
---shell /bin/false prometheus
+--shell /bin/false node_exporter
 
 #Install nodes exporter 
 wget https://github.com/prometheus/node_exporter/releases/download/v1.7.0/node_exporter-1.7.0.linux-amd64.tar.gz
