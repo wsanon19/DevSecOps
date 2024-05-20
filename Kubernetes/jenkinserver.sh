@@ -5,7 +5,7 @@ sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 
 #If you do not have root access on the target system
 # chmod +x kubectl
-m# kdir -p ~/.local/bin
+# mkdir -p ~/.local/bin
 # mv ./kubectl ~/.local/bin/kubectl
 # and then append (or prepend) ~/.local/bin to $PATH
 
