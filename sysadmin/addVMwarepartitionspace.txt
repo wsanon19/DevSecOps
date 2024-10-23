@@ -1,0 +1,26 @@
+a. Increase Virtual Disk Size
+Expand the disk in VMware:
+
+Power off the VM.
+Go to VMware settings for the VM.
+Increase the size of the virtual hard disk.
+Resize Partitions in the VM:
+
+Once you've increased the disk size in VMware, you need to resize the partitions inside the VM.
+Boot into the system, then check if the system detects the new disk size:
+
+
+#sudo fdisk -l
+Use GParted or growpart to resize the partition:
+
+Install growpart and parted if you don't have them:
+
+# sudo apt-get install cloud-guest-utils parted
+
+Resize the partition (example for /dev/sda1):
+
+# sudo growpart /dev/sda 1
+
+Resize Filesystem: After resizing the partition, you need to resize the filesystem (example for ext4 filesystem on /dev/sda1):
+
+# sudo resize2fs /dev/sda1
