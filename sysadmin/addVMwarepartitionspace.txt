@@ -9,7 +9,7 @@ Resize Partitions in the VM:
 Once you've increased the disk size in VMware, you need to resize the partitions inside the VM.
 Boot into the system, then check if the system detects the new disk size:
 
-
+### pour afficher la taille du disk sudo du -ah / ¶ sort -rh ¶ head -n 20 
 #sudo fdisk -l
 Use GParted or growpart to resize the partition:
 
