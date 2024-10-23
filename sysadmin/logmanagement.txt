@@ -1,0 +1,28 @@
+
+####
+sudo nano /etc/logrotate.d/rsyslog
+
+/var/log/syslog
+{
+    daily
+    rotate 1
+    compress
+    missingok
+    notifempty
+    delaycompress
+    postrotate
+        /usr/lib/rsyslog/rsyslog-rotate
+    endscript
+}
+
+sudo systemctl restart rsyslog
+###
+
+Explications :
+
+daily : fait la rotation des logs tous les jours.
+rotate 1 : conserve uniquement un fichier de log (le fichier de la veille).
+compress : compresse le fichier de log précédent pour économiser de l'espace disque.
+notifempty : ne fait pas la rotation si le fichier est vide.
+delaycompress : retarde la compression des logs jusqu'à la prochaine rotation, donc le fichier de log le plus récent ne sera pas compressé immédiatement.
+postrotate : cette section permet de redémarrer rsyslog après chaque rotation pour assurer qu'il réinitialise correctement le fichier de log.
