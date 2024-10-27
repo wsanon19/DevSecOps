@@ -1,26 +1,60 @@
-a. Increase Virtual Disk Size
-Expand the disk in VMware:
+######################## Step 1: Increase the Disk Size in VMware
+Shut down the virtual machine (recommended, although you might be able to do this online if your system allows).
+Go to the VMware interface (vSphere, Workstation, or Fusion).
+Open the Settings or Edit Settings for the VM.
+Find the Hard Disk section for sda.
+Increase the disk size to your desired size.
+Save the settings and restart the VM.
 
-Power off the VM.
-Go to VMware settings for the VM.
-Increase the size of the virtual hard disk.
-Resize Partitions in the VM:
 
-Once you've increased the disk size in VMware, you need to resize the partitions inside the VM.
-Boot into the system, then check if the system detects the new disk size:
+########################Step 2: Rescan the Disk in the VM
+After increasing the virtual disk size, boot up the VM and rescan the disk to detect the new size.
+In the VM, run:
+echo 1 | sudo tee /sys/class/block/sda/device/rescan
 
-### pour afficher la taille du disk sudo du -ah / ¶ sort -rh ¶ head -n 20 
-#sudo fdisk -l
-Use GParted or growpart to resize the partition:
 
-Install growpart and parted if you don't have them:
+########################Step 3: Extend the Partition (sda3) with parted
+Launch parted:
+sudo parted /dev/sda
+Resize the Partition:
+Inside parted, set the unit to sectors to keep alignment:
+(parted) unit s
+Print the Partition Table to find the start sector of sda3:
+(parted) print
+Note the starting sector of sda3 (it should match the existing sda3 start).
+Resize sda3 to the maximum available space:
+(parted) resizepart 3 100%
+Here, 3 is the partition number for sda3, and 100% tells parted to extend the partition to the end of the disk.
+Exit parted:
+(parted) quit
 
-# sudo apt-get install cloud-guest-utils parted
 
-Resize the partition (example for /dev/sda1):
+########################Step 4: Resize the Physical Volume (PV)
+Resize the LVM Physical Volume to recognize the new space available in sda3:
+sudo pvresize /dev/sda3
 
-# sudo growpart /dev/sda 1
 
-Resize Filesystem: After resizing the partition, you need to resize the filesystem (example for ext4 filesystem on /dev/sda1):
+########################Step 5: Extend the Logical Volume (LV)
+Extend the Logical Volume that’s mounted on /:
 
-# sudo resize2fs /dev/sda1
+Use lsblk or lvdisplay to find the exact path of your Logical Volume (e.g., /dev/ubuntu--xxx/root).
+
+Extend the LV to use all the free space in the Volume Group:
+sudo lvextend -l +100%FREE /dev/ubuntu--xxx/root
+
+
+######################## Step 6: Resize the Filesystem
+Finally, resize the filesystem on the Logical Volume to use the extended space. Use the appropriate command for your filesystem type:
+
+For ext4:
+sudo resize2fs /dev/ubuntu--xxx/root
+For XFS:
+
+sudo xfs_growfs /
+
+
+######################## Step 7: Verify the New Space
+Check that the root filesystem has the additional space:
+
+df -h /
+This command should show the increased available space on your root filesystem.
