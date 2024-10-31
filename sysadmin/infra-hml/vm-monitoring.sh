@@ -117,3 +117,10 @@ promtool check config /etc/prometheus/prometheus.yml
 curl -X POST http://localhost:9090/-/reload
 
 
+sudo vim /etc/prometheus/prometheus.yml
+- job_name: "node_export_K8s_master"
+    static_configs:
+      - targets: ["<jenkins-server-public-ip>:9100"]
+
+promtool check config /etc/prometheus/prometheus.yml
+curl -X POST http://localhost:9090/-/reload
